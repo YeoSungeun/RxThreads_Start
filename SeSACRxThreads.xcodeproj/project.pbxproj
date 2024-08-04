@@ -136,6 +136,7 @@
 				041280542AEF9C2600972552 /* SignIn */,
 				0412806D2AEFAD0F00972552 /* SignUpOptional */,
 				041280612AEFA0BE00972552 /* CustomView */,
+				A0D1533D2C603596006A5678 /* Shopping */,
 				04F6DBFC2C5B0BC200667F4D /* Search */,
 				041280232AEF9BAB00972552 /* AppDelegate.swift */,
 				041280252AEF9BAB00972552 /* SceneDelegate.swift */,
@@ -218,6 +219,13 @@
 				A0D1533B2C6029AF006A5678 /* Date+Extension.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		A0D1533D2C603596006A5678 /* Shopping */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Shopping;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
