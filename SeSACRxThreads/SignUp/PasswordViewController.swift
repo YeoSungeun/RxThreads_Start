@@ -67,18 +67,25 @@ class PasswordViewController: UIViewController {
     func configureLayout() {
         view.addSubview(passwordTextField)
         view.addSubview(nextButton)
+        view.addSubview(discriptionLabel)
          
         passwordTextField.snp.makeConstraints { make in
             make.height.equalTo(50)
             make.top.equalTo(view.safeAreaLayoutGuide).offset(200)
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
+        discriptionLabel.snp.makeConstraints { make in
+            make.height.equalTo(20)
+            make.top.equalTo(passwordTextField.snp.bottom)
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
+        }
         
         nextButton.snp.makeConstraints { make in
             make.height.equalTo(50)
-            make.top.equalTo(passwordTextField.snp.bottom).offset(30)
+            make.top.equalTo(passwordTextField.snp.bottom).offset(50)
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
+
 
 }
