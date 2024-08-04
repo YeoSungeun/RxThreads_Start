@@ -140,7 +140,7 @@ class BirthdayViewController: UIViewController {
         nextButton.rx.tap
             .bind(with: self) { owner, _ in
                
-                owner.navigationController?.pushViewController(SearchViewController(), animated: true)
+                owner.navigationController?.pushViewController(ShoppingViewController(), animated: true)
                 owner.showAlert()
             }
             .disposed(by: disposeBag)

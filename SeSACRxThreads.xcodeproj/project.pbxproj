@@ -32,6 +32,8 @@
 		04F6DC002C5B0C2200667F4D /* SearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F6DBFF2C5B0C2200667F4D /* SearchTableViewCell.swift */; };
 		04F6DC022C5B0D8200667F4D /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F6DC012C5B0D8200667F4D /* DetailViewController.swift */; };
 		A0D1533C2C6029AF006A5678 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D1533B2C6029AF006A5678 /* Date+Extension.swift */; };
+		A0D1533F2C6036BD006A5678 /* ShoppingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D1533E2C6036BD006A5678 /* ShoppingViewController.swift */; };
+		A0D153412C6036CE006A5678 /* ShoppingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D153402C6036CE006A5678 /* ShoppingTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +80,8 @@
 		04F6DBFF2C5B0C2200667F4D /* SearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTableViewCell.swift; sourceTree = "<group>"; };
 		04F6DC012C5B0D8200667F4D /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		A0D1533B2C6029AF006A5678 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		A0D1533E2C6036BD006A5678 /* ShoppingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewController.swift; sourceTree = "<group>"; };
+		A0D153402C6036CE006A5678 /* ShoppingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,6 +228,8 @@
 		A0D1533D2C603596006A5678 /* Shopping */ = {
 			isa = PBXGroup;
 			children = (
+				A0D1533E2C6036BD006A5678 /* ShoppingViewController.swift */,
+				A0D153402C6036CE006A5678 /* ShoppingTableViewCell.swift */,
 			);
 			path = Shopping;
 			sourceTree = "<group>";
@@ -374,9 +380,11 @@
 				041280562AEFA04800972552 /* SignInViewController.swift in Sources */,
 				041280282AEF9BAB00972552 /* ViewController.swift in Sources */,
 				041280632AEFA0CE00972552 /* PointButton.swift in Sources */,
+				A0D153412C6036CE006A5678 /* ShoppingTableViewCell.swift in Sources */,
 				04F6DC022C5B0D8200667F4D /* DetailViewController.swift in Sources */,
 				041280242AEF9BAB00972552 /* AppDelegate.swift in Sources */,
 				A0D1533C2C6029AF006A5678 /* Date+Extension.swift in Sources */,
+				A0D1533F2C6036BD006A5678 /* ShoppingViewController.swift in Sources */,
 				04F6DBFE2C5B0C0300667F4D /* SearchViewController.swift in Sources */,
 				04F6DC002C5B0C2200667F4D /* SearchTableViewCell.swift in Sources */,
 				041280732AEFAD4B00972552 /* NicknameViewController.swift in Sources */,
