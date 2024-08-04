@@ -139,9 +139,20 @@ class BirthdayViewController: UIViewController {
         
         nextButton.rx.tap
             .bind(with: self) { owner, _ in
+               
                 owner.navigationController?.pushViewController(SearchViewController(), animated: true)
+                owner.showAlert()
             }
             .disposed(by: disposeBag)
+    }
+    func showAlert() {
+        let alert = UIAlertController(
+            title: "회원가입이 완료되었습니다.",
+            message: nil,
+            preferredStyle: .alert)
+        let okay = UIAlertAction(title: "확인", style: .default)
+        alert.addAction(okay)
+        present(alert, animated: true)
     }
     
     func configureLayout() {
