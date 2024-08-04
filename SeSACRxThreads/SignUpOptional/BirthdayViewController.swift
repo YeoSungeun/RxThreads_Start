@@ -7,6 +7,8 @@
  
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class BirthdayViewController: UIViewController {
     
@@ -66,20 +68,81 @@ class BirthdayViewController: UIViewController {
   
     let nextButton = PointButton(title: "가입하기")
     
+    let year = BehaviorRelay(value: Date().year)
+    let month = BehaviorRelay(value: Date().month)
+    let day = BehaviorRelay(value: Date().day)
+    
+    let disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = Color.white
         
         configureLayout()
-        
-        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
-    }
-    
-    @objc func nextButtonClicked() {
-        navigationController?.pushViewController(SearchViewController(), animated: true)
+        bind()
     }
 
+    func bind() {
+        birthDayPicker.rx.date
+            .bind(with: self) { owner, date in
+                print("날짜바뀜: \(date)")
+                let component = Calendar.current.dateComponents([.day, .month, .year], from: date)
+                // subject - onNext / relay = accept (섞어써도 되지만 잘어울리는 짝꿍~)
+                owner.year.accept(component.year!)
+                owner.month.accept(component.month!)
+                owner.day.accept(component.day!)
+            }
+            .disposed(by: disposeBag)
+        year
+            .map { "\($0)년"}
+            .bind(to: yearLabel.rx.text)
+            .disposed(by: disposeBag)
+        month
+            .bind(with: self) { owner, value in
+                owner.monthLabel.rx.text.onNext("\(value)월")
+            }
+            .disposed(by: disposeBag)
+        day
+            .observe(on: MainScheduler.instance)
+            .subscribe(with: self) { owner, value in
+                owner.dayLabel.text = "\(value)일"
+            }
+            .disposed(by: disposeBag)
+        
+        let validation = birthDayPicker.rx.date
+            .map { value -> Bool in
+                let date17th = Calendar.current.date(byAdding: .year, value: -17, to: Date())!
+                print(date17th.onlyDate)
+                if date17th.onlyDate >= value {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        validation
+            .bind(to: nextButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        validation
+            .bind(with: self) { owner, value in
+                if value {
+                    owner.infoLabel.rx.text.onNext("가입 가능한 나이입니다.")
+                    owner.infoLabel.rx.textColor.onNext(.blue)
+                    owner.nextButton.rx.backgroundColor.onNext(.blue)
+                } else {
+                    owner.infoLabel.rx.text.onNext("만17세 이상만 가입 가능합니다.")
+                    owner.infoLabel.rx.textColor.onNext(.red)
+                    owner.nextButton.rx.backgroundColor.onNext(.lightGray)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        nextButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.navigationController?.pushViewController(SearchViewController(), animated: true)
+            }
+            .disposed(by: disposeBag)
+    }
     
     func configureLayout() {
         view.addSubview(infoLabel)
