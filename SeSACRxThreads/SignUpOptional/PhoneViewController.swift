@@ -7,11 +7,17 @@
  
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class PhoneViewController: UIViewController {
    
-    let phoneTextField = SignTextField(placeholderText: "연락처를 입력해주세요")
+    let phoneTextField = SignTextField(placeholderText: "연락처를 '-'없이 입력해주세요")
     let nextButton = PointButton(title: "다음")
+    var phonNumberData = BehaviorRelay(value: "010")
+    let basicColor = BehaviorSubject(value: UIColor.systemRed)
+    
+    var disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,14 +25,46 @@ class PhoneViewController: UIViewController {
         view.backgroundColor = Color.white
         
         configureLayout()
-        
-        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
-    }
-    
-    @objc func nextButtonClicked() {
-        navigationController?.pushViewController(NicknameViewController(), animated: true)
+        bind()
+
     }
 
+    
+    func bind() {
+        phonNumberData
+            .bind(to: phoneTextField.rx.text)
+            .disposed(by: disposeBag)
+        let validation = phoneTextField.rx.text.orEmpty
+            .map { $0.count >= 10 && $0.range(of: "^[0-9]+$",options: .regularExpression) != nil}
+        
+        validation
+            .bind(to: nextButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        validation
+            .bind(with: self) { owner, value in
+                let color: UIColor = value ? UIColor.systemGreen : UIColor.systemRed
+                owner.basicColor.onNext(color)
+            }
+            .disposed(by: disposeBag)
+        basicColor
+            .bind(to:
+                nextButton.rx.backgroundColor,
+                phoneTextField.rx.textColor,
+                phoneTextField.rx.tintColor
+            )
+            .disposed(by: disposeBag)
+        
+        basicColor
+            .map { $0.cgColor }
+            .bind(to: phoneTextField.layer.rx.borderColor)
+            .disposed(by: disposeBag)
+
+        nextButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.navigationController?.pushViewController(NicknameViewController(), animated: true)
+            }
+            .disposed(by: disposeBag)
+    }
     
     func configureLayout() {
         view.addSubview(phoneTextField)
