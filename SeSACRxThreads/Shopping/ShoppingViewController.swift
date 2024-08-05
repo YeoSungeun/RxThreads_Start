@@ -51,8 +51,8 @@ class ShoppingViewController: UIViewController {
     
     let disposeBag = DisposeBag()
     
-    var list: [ShoppingItem] = [ShoppingItem(title: "이것저것"), ShoppingItem(title: "펜 리필심 사기"), ShoppingItem(title: "안경 맞추기")]
-    
+    var data = [ShoppingItem(title: "이것저것"), ShoppingItem(title: "펜 리필심 사기"), ShoppingItem(title: "안경 맞추기")]
+    lazy var list = BehaviorSubject(value: data)
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
@@ -95,5 +95,17 @@ class ShoppingViewController: UIViewController {
     }
     private func bind() {
         
+
+        searchBar.rx.searchButtonClicked
+            .withLatestFrom(searchBar.rx.text.orEmpty) { void, text in
+                return text
+            }
+            .bind(with: self) { owner, _ in
+                print("검색 버튼 클릭")
+                let word = owner.searchBar.text!
+                owner.data.insert(ShoppingItem(title: word), at: 0)
+                owner.list.onNext(owner.data)
+            }
+            .disposed(by: disposeBag)
     }
 }
