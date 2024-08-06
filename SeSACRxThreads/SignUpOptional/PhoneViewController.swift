@@ -18,6 +18,7 @@ class PhoneViewController: UIViewController {
     let basicColor = BehaviorSubject(value: UIColor.systemRed)
     
     var disposeBag = DisposeBag()
+    let viewModel = PhoneViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +35,7 @@ class PhoneViewController: UIViewController {
         phonNumberData
             .bind(to: phoneTextField.rx.text)
             .disposed(by: disposeBag)
+        
         let validation = phoneTextField.rx.text.orEmpty
             .map { $0.count >= 10 && $0.range(of: "^[0-9]+$",options: .regularExpression) != nil}
         
