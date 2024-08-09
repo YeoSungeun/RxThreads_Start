@@ -115,6 +115,7 @@ class ShoppingViewController: UIViewController {
             .bind(with: self) { owner, value in
                 owner.data.insert(ShoppingItem(title: value), at: 0)
                 owner.list.onNext(owner.data)
+                owner.addListTextField.rx.text.onNext(nil)
             }
             .disposed(by: disposeBag)
         
