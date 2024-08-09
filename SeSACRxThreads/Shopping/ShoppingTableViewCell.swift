@@ -52,7 +52,7 @@ final class ShoppingTableViewCell: UITableViewCell {
     }
      
     private func configure() {
-        addSubview(backView)
+        contentView.addSubview(backView)
         backView.addSubview(doneButton)
         backView.addSubview(likeButton)
         backView.addSubview(contentLabel)

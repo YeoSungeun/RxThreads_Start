@@ -99,12 +99,26 @@ class ShoppingViewController: UIViewController {
             .bind(to: tableView.rx.items(cellIdentifier: ShoppingTableViewCell.identifier, cellType: ShoppingTableViewCell.self)) { (row, element, cell) in
                 cell.contentLabel.text = element.title
                 let doneImage = element.isDone ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "checkmark.square")
+                cell.doneButton.setImage(doneImage, for: .normal)
+                
+                let likeImage = element.isLiked ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
+                cell.likeButton.setImage(likeImage, for: .normal)
                 
                 cell.doneButton.rx.tap
-                    .subscribe(with: self) { owner, _ in
+                    .bind(with: self) { owner, _ in
                         print("doneButton clicked")
+                        owner.data[row].isDone.toggle()
+                        owner.list.onNext(owner.data)
                     }
                     .disposed(by: cell.disposeBag)
+                cell.likeButton.rx.tap
+                    .bind(with: self) { owner, _ in
+                        print("likeButton clicked")
+                        owner.data[row].isLiked.toggle()
+                        owner.list.onNext(owner.data)
+                    }
+                    .disposed(by: cell.disposeBag)
+                
             }
             .disposed(by: disposeBag)
         
