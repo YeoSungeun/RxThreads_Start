@@ -23,7 +23,7 @@ class ShoppingViewController: UIViewController {
         let view = UITableView()
         view.register(ShoppingTableViewCell.self, forCellReuseIdentifier: ShoppingTableViewCell.identifier)
         view.backgroundColor = .white
-        view.rowHeight = 100
+        view.rowHeight = 60
         view.separatorStyle = .none
         return view
     }()
@@ -53,6 +53,7 @@ class ShoppingViewController: UIViewController {
     
     var data = [ShoppingItem(title: "이것저것"), ShoppingItem(title: "펜 리필심 사기"), ShoppingItem(title: "안경 맞추기")]
     lazy var list = BehaviorSubject(value: data)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
@@ -94,17 +95,37 @@ class ShoppingViewController: UIViewController {
         }
     }
     private func bind() {
+        list
+            .bind(to: tableView.rx.items(cellIdentifier: ShoppingTableViewCell.identifier, cellType: ShoppingTableViewCell.self)) { (row, element, cell) in
+                cell.contentLabel.text = element.title
+                let doneImage = element.isDone ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "checkmark.square")
+                
+                cell.doneButton.rx.tap
+                    .subscribe(with: self) { owner, _ in
+                        print("doneButton clicked")
+                    }
+                    .disposed(by: cell.disposeBag)
+            }
+            .disposed(by: disposeBag)
         
-
-        searchBar.rx.searchButtonClicked
-            .withLatestFrom(searchBar.rx.text.orEmpty) { void, text in
+        addListButton.rx.tap
+            .withLatestFrom(addListTextField.rx.text.orEmpty) { void, text in
                 return text
             }
-            .bind(with: self) { owner, _ in
-                print("검색 버튼 클릭")
-                let word = owner.searchBar.text!
-                owner.data.insert(ShoppingItem(title: word), at: 0)
+            .bind(with: self) { owner, value in
+                owner.data.insert(ShoppingItem(title: value), at: 0)
                 owner.list.onNext(owner.data)
+            }
+            .disposed(by: disposeBag)
+        
+        searchBar.rx.text.orEmpty
+            .debounce(.seconds(1), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .bind(with: self) { owner, value in
+                let result = value.isEmpty ? owner.data : owner.data.filter {
+                    $0.title.contains(value.uppercased())
+                }
+                owner.list.onNext(result)
             }
             .disposed(by: disposeBag)
     }
