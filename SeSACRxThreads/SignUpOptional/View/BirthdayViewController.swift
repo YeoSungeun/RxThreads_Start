@@ -72,6 +72,8 @@ class BirthdayViewController: UIViewController {
     let month = BehaviorRelay(value: Date().month)
     let day = BehaviorRelay(value: Date().day)
     
+    let viewModel = BirthdayViewModel()
+    
     let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
@@ -84,62 +86,46 @@ class BirthdayViewController: UIViewController {
     }
 
     func bind() {
-        birthDayPicker.rx.date
-            .bind(with: self) { owner, date in
-                print("날짜바뀜: \(date)")
-                let component = Calendar.current.dateComponents([.day, .month, .year], from: date)
-                // subject - onNext / relay = accept (섞어써도 되지만 잘어울리는 짝꿍~)
-                owner.year.accept(component.year!)
-                owner.month.accept(component.month!)
-                owner.day.accept(component.day!)
-            }
-            .disposed(by: disposeBag)
-        year
+        let input = BirthdayViewModel.Input(birthday: birthDayPicker.rx.date,
+                                            nextTap: nextButton.rx.tap)
+        let output = viewModel.transform(input: input)
+       
+        output.year
             .map { "\($0)년"}
             .bind(to: yearLabel.rx.text)
             .disposed(by: disposeBag)
-        month
+        output.month
             .bind(with: self) { owner, value in
                 owner.monthLabel.rx.text.onNext("\(value)월")
             }
             .disposed(by: disposeBag)
-        day
+        output.day
             .observe(on: MainScheduler.instance)
             .subscribe(with: self) { owner, value in
                 owner.dayLabel.text = "\(value)일"
             }
             .disposed(by: disposeBag)
         
-        let validation = birthDayPicker.rx.date
-            .map { value -> Bool in
-                let date17th = Calendar.current.date(byAdding: .year, value: -17, to: Date())!
-                print(date17th.onlyDate)
-                if date17th.onlyDate >= value {
-                    return true
-                } else {
-                    return false
-                }
-            }
-        validation
+        output.validation
             .bind(to: nextButton.rx.isEnabled)
             .disposed(by: disposeBag)
-        validation
+        output.validation
             .bind(with: self) { owner, value in
                 if value {
-                    owner.infoLabel.rx.text.onNext("가입 가능한 나이입니다.")
-                    owner.infoLabel.rx.textColor.onNext(.blue)
-                    owner.nextButton.rx.backgroundColor.onNext(.blue)
+                    owner.infoLabel.rx.textColor.onNext(.systemGreen)
+                    owner.nextButton.rx.backgroundColor.onNext(.systemGreen)
                 } else {
-                    owner.infoLabel.rx.text.onNext("만17세 이상만 가입 가능합니다.")
                     owner.infoLabel.rx.textColor.onNext(.red)
                     owner.nextButton.rx.backgroundColor.onNext(.lightGray)
                 }
             }
             .disposed(by: disposeBag)
+        output.validText
+            .bind(to: infoLabel.rx.text)
+            .disposed(by: disposeBag)
         
-        nextButton.rx.tap
+        output.nextTap
             .bind(with: self) { owner, _ in
-               
                 owner.navigationController?.pushViewController(ShoppingViewController(), animated: true)
                 owner.showAlert()
             }

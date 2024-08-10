@@ -45,6 +45,7 @@ class PasswordViewController: UIViewController {
                 let color: UIColor = value ? UIColor.systemGreen : UIColor.systemRed
                 // MARK: 이게 맞나..
                 if !value {
+                    owner.basicColor.onNext(color)
                     owner.discriptionLabel.rx.isHidden.onNext(value)
                     owner.discriptionLabel.rx.text.onNext("8자리 이상 입력하세요")
                 } else {

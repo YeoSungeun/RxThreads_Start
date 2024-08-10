@@ -27,11 +27,11 @@ class PhoneViewController: UIViewController {
         
         configureLayout()
         bind()
-
     }
 
     
     func bind() {
+    
         let input = PhoneViewModel.Input(tap: nextButton.rx.tap,
                                          text: phoneTextField.rx.text)
         let output = viewModel.transform(input: input)
@@ -58,6 +58,11 @@ class PhoneViewController: UIViewController {
             .bind(to: phoneTextField.layer.rx.borderColor)
             .disposed(by: disposeBag)
 
+        output.tap
+            .bind(with: self) { owner, _ in
+                owner.navigationController?.pushViewController(NicknameViewController(), animated: true)
+            }
+            .disposed(by: disposeBag)
     }
     
     func configureLayout() {
