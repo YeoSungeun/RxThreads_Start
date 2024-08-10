@@ -15,9 +15,12 @@ class PasswordViewController: UIViewController {
     let passwordTextField = SignTextField(placeholderText: "비밀번호를 입력해주세요")
     let nextButton = PointButton(title: "다음")
     let basicColor = BehaviorSubject(value: UIColor.systemRed)
+    var colors = Observable.just(UIColor.green)
     var discriptionLabel = UILabel()
     
     let disposeBag = DisposeBag()
+    
+    let viewModel = PasswordViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,11 +28,59 @@ class PasswordViewController: UIViewController {
         view.backgroundColor = Color.white
         
         configureLayout()
-        bind()
+        bindInOut()
         
     }
+    func bindInOut() {
+        let input = PasswordViewModel.Input(text: passwordTextField.rx.text,
+                                            nextTap: nextButton.rx.tap)
+        let output = viewModel.transform(input: input)
+        
+        output.validation
+            .bind(to: nextButton.rx.isEnabled,
+                  discriptionLabel.rx.isHidden)
+            .disposed(by: disposeBag)
+        output.validation
+            .bind(with: self) { owner, value in
+                let color: UIColor = value ? UIColor.systemGreen : UIColor.systemRed
+                // MARK: 이게 맞나..
+                if !value {
+                    owner.discriptionLabel.rx.isHidden.onNext(value)
+                    owner.discriptionLabel.rx.text.onNext("8자리 이상 입력하세요")
+                } else {
+                    owner.basicColor.onNext(color)
+                    owner.discriptionLabel.rx.isHidden.onNext(value)
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        // BasicColor는 어떻게 하지? viewmodel에 UIkit 넣고싶지 않은데~
+        // UI관련이니까 괜찮나 ?
+        basicColor
+            .bind(to:
+                nextButton.rx.backgroundColor,
+                passwordTextField.rx.textColor,
+                passwordTextField.rx.tintColor
+            )
+            .disposed(by: disposeBag)
+    
+        basicColor
+            .map { $0.cgColor }
+            .bind(to: passwordTextField.layer.rx.borderColor)
+            .disposed(by: disposeBag)
+        
+        
+        output.nextTap
+            .bind(with: self) { owner, _ in
+                owner.navigationController?.pushViewController(PhoneViewController(), animated: true)
+            }
+            .disposed(by: disposeBag)
+    }
+    
     func bind() {
-        let validation = passwordTextField.rx.text.orEmpty
+        let a =  nextButton.rx.tap
+        let validation = passwordTextField.rx.text
+            .orEmpty
             .map { $0.count >= 8 }
         
         validation
