@@ -17,7 +17,7 @@ struct ShoppingItem {
     var isLiked = false
 }
 
-class ShoppingViewController: UIViewController {
+final class ShoppingViewController: UIViewController {
     
     private let tableView: UITableView = {
         let view = UITableView()
@@ -53,6 +53,8 @@ class ShoppingViewController: UIViewController {
     
     var data = [ShoppingItem(title: "이것저것"), ShoppingItem(title: "펜 리필심 사기"), ShoppingItem(title: "안경 맞추기")]
     lazy var list = BehaviorSubject(value: data)
+    
+    let viewModel = ShoppingViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,53 +97,37 @@ class ShoppingViewController: UIViewController {
         }
     }
     private func bind() {
-        list
+        let input = ShoppingViewModel.Input(searchText: searchBar.rx.text,
+                                            addText: addListTextField.rx.text,
+                                            addListTap: addListButton.rx.tap)
+        let output = viewModel.transform(input: input)
+        output.list
             .bind(to: tableView.rx.items(cellIdentifier: ShoppingTableViewCell.identifier, cellType: ShoppingTableViewCell.self)) { (row, element, cell) in
-                cell.contentLabel.text = element.title
-                let doneImage = element.isDone ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "checkmark.square")
-                cell.doneButton.setImage(doneImage, for: .normal)
-                
-                let likeImage = element.isLiked ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
-                cell.likeButton.setImage(likeImage, for: .normal)
-                
+                cell.configureCell(data: element)
+                        
                 cell.doneButton.rx.tap
                     .bind(with: self) { owner, _ in
                         print("doneButton clicked")
-                        owner.data[row].isDone.toggle()
-                        owner.list.onNext(owner.data)
+                        owner.viewModel.data[row].isDone.toggle()
+                        owner.viewModel.list.onNext(owner.viewModel.data)
                     }
                     .disposed(by: cell.disposeBag)
+                
                 cell.likeButton.rx.tap
                     .bind(with: self) { owner, _ in
                         print("likeButton clicked")
-                        owner.data[row].isLiked.toggle()
-                        owner.list.onNext(owner.data)
+                        owner.viewModel.data[row].isLiked.toggle()
+                        owner.viewModel.list.onNext(owner.viewModel.data)
                     }
                     .disposed(by: cell.disposeBag)
                 
             }
             .disposed(by: disposeBag)
-        
-        addListButton.rx.tap
-            .withLatestFrom(addListTextField.rx.text.orEmpty) { void, text in
-                return text
-            }
-            .bind(with: self) { owner, value in
-                owner.data.insert(ShoppingItem(title: value), at: 0)
-                owner.list.onNext(owner.data)
+        output.addListTap
+            .bind(with: self) { owner, _ in
                 owner.addListTextField.rx.text.onNext(nil)
             }
             .disposed(by: disposeBag)
-        
-        searchBar.rx.text.orEmpty
-            .debounce(.seconds(1), scheduler: MainScheduler.instance)
-            .distinctUntilChanged()
-            .bind(with: self) { owner, value in
-                let result = value.isEmpty ? owner.data : owner.data.filter {
-                    $0.title.contains(value.uppercased())
-                }
-                owner.list.onNext(result)
-            }
-            .disposed(by: disposeBag)
+
     }
 }

@@ -77,6 +77,14 @@ final class ShoppingTableViewCell: UITableViewCell {
             make.height.equalTo(44)
         }
     }
+    func configureCell(data: ShoppingItem) {
+        contentLabel.text = data.title
+        let doneImage = data.isDone ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "checkmark.square")
+        doneButton.setImage(doneImage, for: .normal)
+        
+        let likeImage = data.isLiked ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
+        likeButton.setImage(likeImage, for: .normal)
+    }
     
     override func prepareForReuse() {
         super.prepareForReuse()

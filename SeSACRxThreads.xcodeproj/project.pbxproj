@@ -38,6 +38,7 @@
 		A0F91A2E2C67357C0065543E /* PasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F91A2D2C67357C0065543E /* PasswordViewModel.swift */; };
 		A0F91A302C675E8C0065543E /* BirthdayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F91A2F2C675E8C0065543E /* BirthdayViewModel.swift */; };
 		A0F91A322C675EA70065543E /* NicknameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F91A312C675EA70065543E /* NicknameViewModel.swift */; };
+		A0F91A342C678F930065543E /* ShoppingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F91A332C678F930065543E /* ShoppingViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,7 @@
 		A0F91A2D2C67357C0065543E /* PasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewModel.swift; sourceTree = "<group>"; };
 		A0F91A2F2C675E8C0065543E /* BirthdayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayViewModel.swift; sourceTree = "<group>"; };
 		A0F91A312C675EA70065543E /* NicknameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameViewModel.swift; sourceTree = "<group>"; };
+		A0F91A332C678F930065543E /* ShoppingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -238,6 +240,7 @@
 			children = (
 				A0D1533E2C6036BD006A5678 /* ShoppingViewController.swift */,
 				A0D153402C6036CE006A5678 /* ShoppingTableViewCell.swift */,
+				A0F91A332C678F930065543E /* ShoppingViewModel.swift */,
 			);
 			path = Shopping;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 				A0F91A1B2C6221F60065543E /* PhoneViewModel.swift in Sources */,
 				A0F91A322C675EA70065543E /* NicknameViewModel.swift in Sources */,
 				041280262AEF9BAB00972552 /* SceneDelegate.swift in Sources */,
+				A0F91A342C678F930065543E /* ShoppingViewModel.swift in Sources */,
 				041280582AEFA05300972552 /* SignInViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
